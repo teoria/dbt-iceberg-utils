@@ -1,0 +1,1 @@
+{"metadata": {"dbt_schema_version": "https://schemas.getdbt.com/dbt/catalog/v1.json", "dbt_version": "1.9.4", "generated_at": "2025-04-29T19:51:44.714070Z", "invocation_id": "e97d192e-1515-4187-acf5-532c7ebba1a2", "env": {}}, "nodes": {}, "sources": {}, "errors": ["An error occurred (EntityNotFoundException) when calling the GetTables operation: Database dbtice not found."]}
