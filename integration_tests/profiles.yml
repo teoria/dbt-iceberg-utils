@@ -1,0 +1,15 @@
+# example profiles.yml file
+integration_tests:
+  target: trino 
+  outputs:
+    trino:
+      type: trino
+      method: none
+      user: admin
+      password:
+      database: iceberg
+      schema: jaffle_shop
+      host: localhost
+      port: 8080
+      http_scheme: http
+      threads: 1
