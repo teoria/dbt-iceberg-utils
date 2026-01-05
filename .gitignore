@@ -137,7 +137,7 @@ venv_dbt/
 ENV/
 env.bak/
 venv.bak/
-
+devops/volumes/
 # Spyder project settings
 .spyderproject
 .spyproject
