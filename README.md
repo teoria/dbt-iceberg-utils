@@ -1,4 +1,4 @@
-# dbt_duckdb_utils
+# dbt_iceberg_utils
 
 Utility package for projects using [dbt](https://www.getdbt.com/) and [iceberg](https://duckdb.org/) with the adapter [dbt-trino](https://github.com/starburstdata/dbt-trino), [dbt-spark](https://github.com/dbt-labs/dbt-spark) or [dbt-athena](https://github.com/dbt-labs/dbt-athena).
 
