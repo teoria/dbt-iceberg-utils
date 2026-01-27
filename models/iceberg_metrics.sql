@@ -1,38 +1,61 @@
+
+{% if adapter.type() == 'athena' %}
+
 {{
   config(
     materialized='incremental',  
-    unique_key=['table_name','safra'],
+    unique_key=['table_name','created_at'],
+    on_schema_change='sync_all_columns',  
+    incremental_strategy='merge',
+    table_type='iceberg',
+    write_compression='snappy',
+    format='parquet',
+    unique_tmp_table_suffix=True,
+    table_properties={
+        'optimize_rewrite_delete_files_threshold': '5',
+        'vacuum_max_snapshot_age_seconds': '295200'
+    }
+  )
+}}
+{% else %}
+
+{{
+  config(
+    materialized='incremental',  
+    unique_key=['table_name','created_at'],
     on_schema_change='sync_all_columns',  
     incremental_strategy='merge'
   )
 }}
+{% endif %}
+
 
 SELECT
     'name' AS table_name,
-    cast('2026-01-05 02:48:06' AS timestamp(6) with time zone) AS safra,
-    0 AS changed_partition_count,
-    0 AS total_equality_deletes,
-    0 AS total_position_deletes,
-    0 AS total_delete_files,
-    0 AS total_files_size,
-    0 AS total_records,
-    0 AS total_data_files,
+    cast('2026-01-05 02:48:06' AS timestamp(6) with time zone) AS created_at,
+    9999999999999 AS changed_partition_count,
+    9999999999999 AS total_equality_deletes,
+    9999999999999 AS total_position_deletes,
+    9999999999999 AS total_delete_files,
+    9999999999999 AS total_files_size,
+    9999999999999 AS total_records,
+    9999999999999 AS total_data_files,
 
-    0 AS total_partitions,
-    0 AS avg_partition_record_count,
-    0 AS max_partition_record_count,
-    0 AS min_partition_record_count,
-    0 AS deviation_record_count,
-    0 AS avg_file_count,
-    0 AS max_file_count,
-    0 AS min_file_count,
-    0 AS total_size_bytes,
+    9999999999999 AS total_partitions,
+    9999999999999 AS avg_partition_record_count,
+    9999999999999 AS max_partition_record_count,
+    9999999999999 AS min_partition_record_count,
+    9999999999999 AS deviation_record_count,
+    9999999999999 AS avg_file_count,
+    9999999999999 AS max_file_count,
+    9999999999999 AS min_file_count,
+    9999999999999 AS total_size_bytes,
 
-    0 AS avg_file_record_count,
-    0 AS max_file_record_count,
-    0 AS min_file_record_count,
-    0 AS avg_file_size,
-    0 AS max_file_size,
-    0 AS min_file_size
+    9999999999999 AS avg_file_record_count,
+    9999999999999 AS max_file_record_count,
+    9999999999999 AS min_file_record_count,
+    9999999999999 AS avg_file_size,
+    9999999999999 AS max_file_size,
+    9999999999999 AS min_file_size
 
 WHERE 1 = 0

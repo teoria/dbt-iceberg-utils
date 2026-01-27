@@ -1,13 +1,13 @@
 {% macro default__get_table_metrics_sql(catalog,schema,table_name) %}
 {% set date_run = run_started_at.strftime("%Y-%m-%d %H:%M:%S") %}
      
-     MERGE INTO "iceberg"."jaffle_shop_iceberg"."iceberg_metrics" as DBT_INTERNAL_DEST
+     MERGE INTO {{ catalog }}.{{ schema }}_iceberg."iceberg_metrics" as DBT_INTERNAL_DEST
             USING (
         with
         iceberg_snapshot_metric as (
             SELECT 
                 '{{ table_name }}' as table_name,
-                cast('{{ date_run }}' AS timestamp(6) WITH time zone)  as safra,
+                cast('{{ date_run }}' AS timestamp(6) WITH time zone)  as created_at,
                 summary['changed-partition-count'] as "changed_partition_count", 
                 summary['total-equality-deletes'] as "total_equality_deletes", 
                 summary['total-position-deletes'] as "total_position_deletes", 
@@ -22,7 +22,7 @@
 
             SELECT 
                 '{{ table_name }}' as table_name,
-                '{{ date_run }}' as safra,
+                '{{ date_run }}' as created_at,
                 CAST(AVG(record_count) as INT) as avg_record_count, 
                 MAX(record_count) as max_record_count, 
                 MIN(record_count) as min_record_count, 
@@ -42,7 +42,7 @@
             SELECT 
 
                 '{{ table_name }}' as table_name,
-                '{{ date_run }}' as safra,
+                '{{ date_run }}' as created_at,
                 count(*) as total_partitions,
                 avg(record_count) avg_record_count,
                 max(record_count) max_record_count,
@@ -57,7 +57,7 @@
             SELECT  
 
             iceberg_snapshot_metric.table_name,
-            iceberg_snapshot_metric.safra,
+            iceberg_snapshot_metric.created_at,
             cast(iceberg_snapshot_metric.changed_partition_count as int) as changed_partition_count, 
             cast(iceberg_snapshot_metric.total_equality_deletes as int) as total_equality_deletes, 
             cast(iceberg_snapshot_metric.total_position_deletes as int) as total_position_deletes, 
@@ -93,14 +93,14 @@
             on (
                     DBT_INTERNAL_SOURCE.table_name = DBT_INTERNAL_DEST.table_name
                   and  
-                    DBT_INTERNAL_SOURCE.safra = DBT_INTERNAL_DEST.safra
+                    DBT_INTERNAL_SOURCE.created_at = DBT_INTERNAL_DEST.created_at
                 )
         when matched then update set
-            "table_name" = DBT_INTERNAL_SOURCE."table_name","safra" = DBT_INTERNAL_SOURCE."safra","changed_partition_count" = DBT_INTERNAL_SOURCE."changed_partition_count","total_equality_deletes" = DBT_INTERNAL_SOURCE."total_equality_deletes","total_position_deletes" = DBT_INTERNAL_SOURCE."total_position_deletes","total_delete_files" = DBT_INTERNAL_SOURCE."total_delete_files","total_files_size" = DBT_INTERNAL_SOURCE."total_files_size","total_records" = DBT_INTERNAL_SOURCE."total_records","total_data_files" = DBT_INTERNAL_SOURCE."total_data_files","total_partitions" = DBT_INTERNAL_SOURCE."total_partitions","avg_partition_record_count" = DBT_INTERNAL_SOURCE."avg_partition_record_count","max_partition_record_count" = DBT_INTERNAL_SOURCE."max_partition_record_count","min_partition_record_count" = DBT_INTERNAL_SOURCE."min_partition_record_count","deviation_record_count" = DBT_INTERNAL_SOURCE."deviation_record_count","avg_file_count" = DBT_INTERNAL_SOURCE."avg_file_count","max_file_count" = DBT_INTERNAL_SOURCE."max_file_count","min_file_count" = DBT_INTERNAL_SOURCE."min_file_count","total_size_bytes" = DBT_INTERNAL_SOURCE."total_size_bytes","avg_file_record_count" = DBT_INTERNAL_SOURCE."avg_file_record_count","max_file_record_count" = DBT_INTERNAL_SOURCE."max_file_record_count","min_file_record_count" = DBT_INTERNAL_SOURCE."min_file_record_count","avg_file_size" = DBT_INTERNAL_SOURCE."avg_file_size","max_file_size" = DBT_INTERNAL_SOURCE."max_file_size","min_file_size" = DBT_INTERNAL_SOURCE."min_file_size"
+            "table_name" = DBT_INTERNAL_SOURCE."table_name","created_at" = DBT_INTERNAL_SOURCE."created_at","changed_partition_count" = DBT_INTERNAL_SOURCE."changed_partition_count","total_equality_deletes" = DBT_INTERNAL_SOURCE."total_equality_deletes","total_position_deletes" = DBT_INTERNAL_SOURCE."total_position_deletes","total_delete_files" = DBT_INTERNAL_SOURCE."total_delete_files","total_files_size" = DBT_INTERNAL_SOURCE."total_files_size","total_records" = DBT_INTERNAL_SOURCE."total_records","total_data_files" = DBT_INTERNAL_SOURCE."total_data_files","total_partitions" = DBT_INTERNAL_SOURCE."total_partitions","avg_partition_record_count" = DBT_INTERNAL_SOURCE."avg_partition_record_count","max_partition_record_count" = DBT_INTERNAL_SOURCE."max_partition_record_count","min_partition_record_count" = DBT_INTERNAL_SOURCE."min_partition_record_count","deviation_record_count" = DBT_INTERNAL_SOURCE."deviation_record_count","avg_file_count" = DBT_INTERNAL_SOURCE."avg_file_count","max_file_count" = DBT_INTERNAL_SOURCE."max_file_count","min_file_count" = DBT_INTERNAL_SOURCE."min_file_count","total_size_bytes" = DBT_INTERNAL_SOURCE."total_size_bytes","avg_file_record_count" = DBT_INTERNAL_SOURCE."avg_file_record_count","max_file_record_count" = DBT_INTERNAL_SOURCE."max_file_record_count","min_file_record_count" = DBT_INTERNAL_SOURCE."min_file_record_count","avg_file_size" = DBT_INTERNAL_SOURCE."avg_file_size","max_file_size" = DBT_INTERNAL_SOURCE."max_file_size","min_file_size" = DBT_INTERNAL_SOURCE."min_file_size"
         when not matched then insert
-            ("table_name", "safra", "changed_partition_count", "total_equality_deletes", "total_position_deletes", "total_delete_files", "total_files_size", "total_records", "total_data_files", "total_partitions", "avg_partition_record_count", "max_partition_record_count", "min_partition_record_count", "deviation_record_count", "avg_file_count", "max_file_count", "min_file_count", "total_size_bytes", "avg_file_record_count", "max_file_record_count", "min_file_record_count", "avg_file_size", "max_file_size", "min_file_size")
+            ("table_name", "created_at", "changed_partition_count", "total_equality_deletes", "total_position_deletes", "total_delete_files", "total_files_size", "total_records", "total_data_files", "total_partitions", "avg_partition_record_count", "max_partition_record_count", "min_partition_record_count", "deviation_record_count", "avg_file_count", "max_file_count", "min_file_count", "total_size_bytes", "avg_file_record_count", "max_file_record_count", "min_file_record_count", "avg_file_size", "max_file_size", "min_file_size")
         values
-            (DBT_INTERNAL_SOURCE."table_name", DBT_INTERNAL_SOURCE."safra", DBT_INTERNAL_SOURCE."changed_partition_count", DBT_INTERNAL_SOURCE."total_equality_deletes", DBT_INTERNAL_SOURCE."total_position_deletes", DBT_INTERNAL_SOURCE."total_delete_files", DBT_INTERNAL_SOURCE."total_files_size", DBT_INTERNAL_SOURCE."total_records", DBT_INTERNAL_SOURCE."total_data_files", DBT_INTERNAL_SOURCE."total_partitions", DBT_INTERNAL_SOURCE."avg_partition_record_count", DBT_INTERNAL_SOURCE."max_partition_record_count", DBT_INTERNAL_SOURCE."min_partition_record_count", DBT_INTERNAL_SOURCE."deviation_record_count", DBT_INTERNAL_SOURCE."avg_file_count", DBT_INTERNAL_SOURCE."max_file_count", DBT_INTERNAL_SOURCE."min_file_count", DBT_INTERNAL_SOURCE."total_size_bytes", DBT_INTERNAL_SOURCE."avg_file_record_count", DBT_INTERNAL_SOURCE."max_file_record_count", DBT_INTERNAL_SOURCE."min_file_record_count", DBT_INTERNAL_SOURCE."avg_file_size", DBT_INTERNAL_SOURCE."max_file_size", DBT_INTERNAL_SOURCE."min_file_size")
+            (DBT_INTERNAL_SOURCE."table_name", DBT_INTERNAL_SOURCE."created_at", DBT_INTERNAL_SOURCE."changed_partition_count", DBT_INTERNAL_SOURCE."total_equality_deletes", DBT_INTERNAL_SOURCE."total_position_deletes", DBT_INTERNAL_SOURCE."total_delete_files", DBT_INTERNAL_SOURCE."total_files_size", DBT_INTERNAL_SOURCE."total_records", DBT_INTERNAL_SOURCE."total_data_files", DBT_INTERNAL_SOURCE."total_partitions", DBT_INTERNAL_SOURCE."avg_partition_record_count", DBT_INTERNAL_SOURCE."max_partition_record_count", DBT_INTERNAL_SOURCE."min_partition_record_count", DBT_INTERNAL_SOURCE."deviation_record_count", DBT_INTERNAL_SOURCE."avg_file_count", DBT_INTERNAL_SOURCE."max_file_count", DBT_INTERNAL_SOURCE."min_file_count", DBT_INTERNAL_SOURCE."total_size_bytes", DBT_INTERNAL_SOURCE."avg_file_record_count", DBT_INTERNAL_SOURCE."max_file_record_count", DBT_INTERNAL_SOURCE."min_file_record_count", DBT_INTERNAL_SOURCE."avg_file_size", DBT_INTERNAL_SOURCE."max_file_size", DBT_INTERNAL_SOURCE."min_file_size")
 
 {% endmacro %}
 
@@ -130,7 +130,7 @@
   
 SELECT
 	table_name,
-    safra,
+    created_at,
     -- COUNT(*) as total_files2,
     -- SUM(total_size_bytes) / 1024 / 1024 as total_size_mb2,
     -- AVG(total_size_bytes) / 1024 / 1024 as avg_file_size_mb2,
@@ -150,7 +150,7 @@ SELECT
   ROUND(coalesce(avg_file_size,0) / 1048576.0, 2) AS avg_file_size_mb,
   total_delete_files  
 from iceberg.jaffle_shop_iceberg.iceberg_metrics
-order by table_name,safra desc
+order by table_name,created_at desc
  
 
   {% endset %}
@@ -181,7 +181,7 @@ order by table_name,safra desc
     WITH iceberg_metrics AS (
         SELECT
             table_name,
-            safra,
+            created_at,
             total_position_deletes,
             total_equality_deletes,
             total_delete_files,
@@ -190,7 +190,7 @@ order by table_name,safra desc
             total_data_files,
             total_records,
             total_size_bytes,
-            ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY safra DESC) AS rn
+            ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY created_at DESC) AS rn
 
         FROM {{ database }}.{{ schema }}_iceberg.iceberg_metrics
     ),
@@ -203,7 +203,7 @@ order by table_name,safra desc
 
     SELECT
         table_name,
-        safra,
+        created_at,
         (
             CASE
                 WHEN ((total_position_deletes + total_equality_deletes) * 100.0 / NULLIF((total_data_files), 0)) > {{ delete_file_ratio_threshold }} THEN 'High delete_file_ratio_percent'
@@ -245,7 +245,7 @@ order by table_name,safra desc
         OR total_delete_files > {{ total_delete_files_threshold }}
         OR deviation_record_count > {{ deviation_record_count_threshold }}
         OR (coalesce(min_file_size,0) / 1048576.0) < {{ min_file_size_mb_threshold }}
-    ORDER BY table_name, safra DESC
+    ORDER BY table_name, created_at DESC
     )
     SELECT table_name, why
     FROM tables_with_issues

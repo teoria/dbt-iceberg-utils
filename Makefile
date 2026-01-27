@@ -14,7 +14,7 @@ create_env:
  
 pip_install:  
 	. ./venv_dbt/bin/activate
-	venv_dbt/bin/pip install dbt-core dbt-postgres dbt-trino  
+	venv_dbt/bin/pip install dbt-core dbt-postgres dbt-trino dbt-athena
 
 start: ## Inicia Serviços
 	docker compose -f devops/docker-compose.yaml up -d  
@@ -52,15 +52,9 @@ clean:
                                                           
 
 help:
+	
 	@echo '**************************************************************************'
-	@echo '  _         _             _       _                _ _     _    '
-	@echo ' | |       | |           (_)     | |              | | |   | |   '
-	@echo ' | |_ _   _| |_ ___  _ __ _  __ _| |  ______    __| | |__ | |_  '
-	@echo ' | __| | | | __/ _ \| |__| |/ _` | | |______|  / _` | |_ \| __| '
-	@echo ' | |_| |_| | || (_) | |  | | (_| | |          | (_| | |_) | |_  '
-	@echo '  \__|\__,_|\__\___/|_|  |_|\__,_|_|           \__,_|_.__/ \__| '
- 
-
+	@cat ./docs/logo.txt 
 	@echo ' ' 
 	@echo '**************************************************************************'
 	@echo '   '

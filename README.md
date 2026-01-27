@@ -9,7 +9,7 @@ Utility package for projects using [dbt](https://www.getdbt.com/) and [iceberg](
 ```yaml
 packages:
   - package: teoria/dbt_iceberg_utils
-    version: 1.0.0 # or any other version
+    version: 1.0.1 # or any other version
 ```
 
 2. Run `dbt deps`
@@ -32,7 +32,7 @@ models:
   iceberg_utils:
     +schema: "iceberg"
   my_project:
-    +post-hook: "{{ iceberg_utils.get_table_metrics(this)}}"
+    +post-hook: "{{ iceberg_utils.get_table_metrics_sql(this)}}"
 ```
 or 
 
@@ -43,14 +43,14 @@ at model config:
     unique_key = 'customer_id', 
     incremental_strategy = 'merge',
     table_type='iceberg',
-    post_hook: "{{ iceberg_utils.get_table_metrics(this) }}"
-     
-) }}
+    post_hook: "{{ iceberg_utils.get_table_metrics_sql(this) }}"
+   )
+}}
 ```
 
 or call the macro directly
 ```bash
-dbt run-operation iceberg_utils.get_table_metrics --args '{"table_name":"customers"}'
+dbt run-operation iceberg_utils.run_get_table_metrics --args '{"table_name":"customers"}'
 ```
 6 . Add the on-run-end hook to your dbt_project.yml:
 
