@@ -11,8 +11,7 @@
     write_compression='snappy',
     format='parquet',
     unique_tmp_table_suffix=True,
-    table_properties={
-        'optimize_rewrite_delete_files_threshold': '5',
+    table_properties={ 
         'vacuum_max_snapshot_age_seconds': '295200'
     }
   )
