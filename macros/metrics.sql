@@ -107,18 +107,17 @@
 
 {% macro run_get_table_metrics(table_name) %} 
     
-    {{ log( "<<<<<<<<antes>>>>>>>" , True) }} 
-    {{ log(table_name, True) }} 
-    {% set query_files = get_table_metrics_sql( table_name ) %} 
-    {{ log( "<<<<<<<<fim>>>>>>>" , True) }}  
+    {{ log( "<<<<<<<<antes>>>>>>>" , False) }} 
+    {{ log(table_name, False) }} 
+    {% set query_files = iceberg_utils.get_table_metrics_sql( table_name ) %} 
+    {{ log( "<<<<<<<<fim>>>>>>>" , False) }}  
     
     -- {{ log( query_files , True) }}
     {% set results = run_query(query_files) %}
 
     {% if execute %}
         {% if results is not none %}
-            {{ log(results.print_table(), info=True) }}
-            {# {{return(results) }} #}
+            {{ log(table_name, info=True) }} 
         {% endif %}
     {% endif %}
  
