@@ -9,7 +9,7 @@ Utility package for projects using [dbt](https://www.getdbt.com/) and [iceberg](
 ```yaml
 packages:
   - package: teoria/dbt_iceberg_utils
-    version: 1.1.0 # or any other version
+    version: 1.1.1 # or any other version
 ```
 
 2. Run `dbt deps`
