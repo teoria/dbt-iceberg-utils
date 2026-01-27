@@ -2,9 +2,9 @@
 
     {% if table_name is string %}
         {% if table_name.contains(".") %}
-            {% set   database=table_name.split(".")[0], 
-                schema=table_name.split(".")[1], 
-                table_name=table_name.split(".")[2]   %}
+            {% set   database=table_name.split(".")[0] %} 
+            {% set   schema=table_name.split(".")[1] %} 
+            {% set   table_name=table_name.split(".")[2]   %}
         {% else %}
 
             {% set rel = ref(table_name).render().replace('"','').split(".") %}
