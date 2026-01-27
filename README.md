@@ -9,7 +9,7 @@ Utility package for projects using [dbt](https://www.getdbt.com/) and [iceberg](
 ```yaml
 packages:
   - package: teoria/dbt_iceberg_utils
-    version: 1.0.1 # or any other version
+    version: 1.1.0 # or any other version
 ```
 
 2. Run `dbt deps`
@@ -43,7 +43,7 @@ at model config:
     unique_key = 'customer_id', 
     incremental_strategy = 'merge',
     table_type='iceberg',
-    post_hook: "{{ iceberg_utils.get_table_metrics_sql(this) }}"
+    post_hook="{{ iceberg_utils.get_table_metrics_sql(this) }}"
    )
 }}
 ```
