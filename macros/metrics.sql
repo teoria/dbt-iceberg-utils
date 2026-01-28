@@ -1,7 +1,7 @@
-{% macro default__get_table_metrics_sql(catalog,schema,table_name) %}
+{% macro default__get_table_metrics_sql(table_catalog,table_schema,table_name) %}
 {% set date_run = run_started_at.strftime("%Y-%m-%d %H:%M:%S") %}
      
-     MERGE INTO {{ catalog }}.{{ schema }}_iceberg."iceberg_metrics" as DBT_INTERNAL_DEST
+     MERGE INTO {{ database }}.{{ schema }}_iceberg.iceberg_metrics as DBT_INTERNAL_DEST
             USING (
         with
         iceberg_snapshot_metric as (
@@ -15,7 +15,7 @@
                 summary['total-files-size']  as "total_files_size",
                 summary['total-records'] as "total_records", 
                 summary['total-data-files']  as "total_data_files"
-            FROM  {{ catalog }}.{{ schema }}."{{ table_name }}$snapshots" ORDER BY committed_at DESC LIMIT 1
+            FROM  {{ table_catalog }}.{{ table_schema }}."{{ table_name }}$snapshots" ORDER BY committed_at DESC LIMIT 1
 
         )
         , iceberg_files_metric as (
@@ -29,14 +29,14 @@
                 CAST(AVG(file_size_in_bytes) as INT) as avg_file_size, 
                 MAX(file_size_in_bytes) as max_file_size, 
                 MIN(file_size_in_bytes) as min_file_size 
-            FROM {{ catalog }}.{{ schema }}."{{ table_name }}$files"
+            FROM {{ table_catalog }}.{{ table_schema }}."{{ table_name }}$files"
         )
         , iceberg_partitions_data as (
             SELECT 
                         record_count,
                         file_count,
                         CAST(total_size AS BIGINT) as file_size
-            FROM {{ catalog }}.{{ schema }}."{{ table_name }}$partitions"
+            FROM {{ table_catalog }}.{{ table_schema }}."{{ table_name }}$partitions"
         )
         ,iceberg_partitions_metric as (
             SELECT 

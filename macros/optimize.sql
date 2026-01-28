@@ -24,7 +24,7 @@
 {% endmacro %}
 
 {% macro athena__vacuum_table(table_name) %}
-    vacuum table {{ table_name }}
+    vacuum {{ table_name }}
 {% endmacro %}
 
 

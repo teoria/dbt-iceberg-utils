@@ -2,7 +2,7 @@
 
     {% if table_name is string %}
         {% if table_name.split(".")|length == 3 %}
-            {% set   database=table_name.split(".")[0] %} 
+            {% set   catalog=table_name.split(".")[0] %} 
             {% set   schema=table_name.split(".")[1] %} 
             {% set   table_name=table_name.split(".")[2]   %}
         {% else %}
