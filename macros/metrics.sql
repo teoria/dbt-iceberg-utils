@@ -107,10 +107,11 @@
 
 
 
+
 {% macro run_get_table_metrics(table_name) %} 
     
     {% if arg is iterable and arg is not string and arg is not mapping %}
-        {{ log( "<<<<<<<<ARRAY>>>>>>>"~ table_name|length , true) }} 
+        {{ log( "<<<<<<<<ARRAY>>>>>>>"~ table_name|length , false) }} 
         {% for tbl in table_name %}
             {{ log(tbl , true) }} 
             {% set query_files = iceberg_utils.get_table_metrics_sql( tbl ) %} 
@@ -132,6 +133,8 @@
     {% endif %}
  
 {% endmacro %}
+
+
 
 
 {% macro get_iceberg_models() %}
