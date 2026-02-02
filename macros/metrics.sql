@@ -105,16 +105,26 @@
 {% endmacro %}
 
 
+
+
 {% macro run_get_table_metrics(table_name) %} 
     
-    {{ log( "<<<<<<<<antes>>>>>>>" , False) }} 
-    {{ log(table_name, False) }} 
-    {% set query_files = iceberg_utils.get_table_metrics_sql( table_name ) %} 
-    {{ log( "<<<<<<<<fim>>>>>>>" , False) }}  
-    
-    -- {{ log( query_files , True) }}
-    {% set results = run_query(query_files) %}
+    {% if arg is iterable and arg is not string and arg is not mapping %}
+        {{ log( "<<<<<<<<ARRAY>>>>>>>"~ table_name|length , true) }} 
+        {% for tbl in table_name %}
+            {{ log(tbl , true) }} 
+            {% set query_files = iceberg_utils.get_table_metrics_sql( tbl ) %} 
+            {% set results = run_query(query_files) %}
+        {% endfor %}
+    {% else %}
+        {{ log( "<<<<<<<<antes>>>>>>>" , False) }} 
+        {{ log(table_name, False) }} 
+        {% set query_files = iceberg_utils.get_table_metrics_sql( table_name ) %} 
+        {{ log( "<<<<<<<<fim>>>>>>>" , False) }} 
+        {% set results = run_query(query_files) %}
 
+    {% endif %}
+    
     {% if execute %}
         {% if results is not none %}
             {{ log(table_name, info=True) }} 
